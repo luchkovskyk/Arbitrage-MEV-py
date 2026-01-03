@@ -18,7 +18,7 @@ def chunk(lst, n):
 
 
 
-def analysis():
+def analysis(dry_run=False):
     base_tokens = load_json('base_tokens.json')
     tokens_arbitrum = load_json('token_list.json')
     tokens_arbitrum_list = list(chunk(tokens_arbitrum["tokens"], 4))
@@ -91,7 +91,10 @@ def analysis():
                         
                         print(f"For {readableAmountsIn} {base_symbol} in {maxOut[j][i][1]}  you get {readableAmountOut} {token1_symbol}")
                         print(f"For {readableAmountOut} {token1_symbol} in {maxIn[j][i][1]}  you get {readableAmountIn} {base_symbol}")
-                        trade(amountsIn[j][i], maxOut[j][i], maxIn[j][i], base_token, token1)
+                        if dry_run:
+                            print("DRY RUN: skipping trade execution.")
+                        else:
+                            trade(amountsIn[j][i], maxOut[j][i], maxIn[j][i], base_token, token1)
                         #readable_profit = to_readable_amount(profit_min, base_decimals)
                         #print(f"MIN PROFIT: {readable_profit}")
         
@@ -104,5 +107,5 @@ def analysis():
 
 
 
-def main():
-    analysis()
+def main(dry_run=False):
+    analysis(dry_run=dry_run)

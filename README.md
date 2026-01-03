@@ -20,7 +20,22 @@ Please make sure you understand the code before executing it, it is not commente
 3. Approve handlers using the function approve_handlers in [retrieve_tokens](scripts/retrieve_tokens.py) 
 4. Start doing arbitrage with [Arbitrage_detector](scripts/Arbitrage_detector.py)  ->brownie run scripts/Arbitrage_detector.py
 5. Once done, retrieve tokens with the function retrieve in [retrieve_tokens](scripts/retrieve_tokens.py) 
- 
 
+## Tests
+
+Run the Brownie tests (includes deploy, approve, and swap simulation coverage):
+
+```
+brownie test
+```
+
+## Dry-run mode
+
+To log profitable routes without sending transactions, run the detector in dry-run mode:
+
+```
+brownie run scripts/Arbitrage_detector.py main True
+```
+ 
 
 
