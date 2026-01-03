@@ -6,10 +6,16 @@ This arbitrage bot is intended to work on Arbitrum L2 chain.
 
 Please make sure you understand the code before executing it, it is not commented as of now.
 
+## Installation
+
+1. Install Python 3.9
+2. Install dependencies: `pip install -r requirements.txt`
+3. Verify Brownie is installed: `brownie --version`
+
 ## Setup
 
-1. Create a .env file containing the deployment addresses for the quoter and router contracts of the protocols used in brownie-config.yaml
-2. Add your private key to the .env file
+1. Copy `.env.example` to `.env` and fill in the deployment addresses for the quoter and router contracts referenced in `brownie-config.yaml`
+2. Add your private key and RPC URL to the `.env` file
 3. Configure the arbitrum-main network using brownie networks
 4. Set the amount you want to trade with each token in "amount_min" - [base_tokens.json](base_tokens.json) 
 
@@ -21,6 +27,5 @@ Please make sure you understand the code before executing it, it is not commente
 4. Start doing arbitrage with [Arbitrage_detector](scripts/Arbitrage_detector.py)  ->brownie run scripts/Arbitrage_detector.py
 5. Once done, retrieve tokens with the function retrieve in [retrieve_tokens](scripts/retrieve_tokens.py) 
  
-
 
 
