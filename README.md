@@ -6,10 +6,16 @@ This arbitrage bot is intended to work on Arbitrum L2 chain.
 
 Please make sure you understand the code before executing it, it is not commented as of now.
 
+## Installation
+
+1. Install Python 3.9
+2. Install dependencies: `pip install -r requirements.txt`
+3. Verify Brownie is installed: `brownie --version`
+
 ## Setup
 
-1. Create a .env file containing the deployment addresses for the quoter and router contracts of the protocols used in brownie-config.yaml
-2. Provide a private key via one of the supported secret sources (see "Security practices" below)
+1. Copy `.env.example` to `.env` and fill in the deployment addresses for the quoter and router contracts referenced in `brownie-config.yaml`
+2. Add your private key and RPC URL to the `.env` file
 3. Configure the arbitrum-main network using brownie networks
 4. Set the amount you want to trade with each token in "amount_min" - [base_tokens.json](base_tokens.json) 
 
@@ -35,5 +41,4 @@ Please make sure you understand the code before executing it, it is not commente
 
 Set `READ_ONLY=true` or pass `--read-only` to scripts that send transactions. This will skip on-chain writes and only simulate/estimate costs. You can also set `READ_ONLY_FROM` (or `mode.read_only_from` in `brownie-config.yaml`) to control the `from` address used for gas estimation.
  
-
 
