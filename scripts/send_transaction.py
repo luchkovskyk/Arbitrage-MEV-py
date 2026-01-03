@@ -1,5 +1,7 @@
 from brownie import accounts, web3, interface, config, Arbitrage
 
+from .helpful_scripts import resolve_private_key, resolve_read_only, resolve_read_only_from
+
 
 min_pecentage_profit = 0.0005
 
@@ -24,8 +26,14 @@ PROTOCOL_TO_ID = {
 
 
 
-def trade(amountIn, maxOut, maxIn, base_token, token1):
-    account = accounts.add(config["wallets"]["from_key"])
+def trade(amountIn, maxOut, maxIn, base_token, token1, read_only=None):
+    read_only_mode = resolve_read_only(config, read_only)
+    if read_only_mode:
+        from_address = resolve_read_only_from(config) or "0x0000000000000000000000000000000000000000"
+        account = None
+    else:
+        account = accounts.add(resolve_private_key(config))
+        from_address = account.address
 
     
     protocol1 = PROTOCOL_TO_ID[maxOut[1]]
@@ -77,7 +85,7 @@ def trade(amountIn, maxOut, maxIn, base_token, token1):
     min_profit = 0   #0.1$ in weth
     minAmoutOut = amountIn+min_profit
     try:
-        min_profit = Arbi_est.functions.profitSwap([SwapParams1, SwapParams2], minAmoutOut).estimateGas({"from":account.address})
+        min_profit = Arbi_est.functions.profitSwap([SwapParams1, SwapParams2], minAmoutOut).estimateGas({"from": from_address})
         min_profit = web3.eth.gas_price*min_profit
         #print(f'Minimum profit is: {min_profit}')
     except ValueError as e:
@@ -91,6 +99,9 @@ def trade(amountIn, maxOut, maxIn, base_token, token1):
 
     print(f'minAmountOut: {minAmoutOut}, amountIn: {maxIn[0]}')
 
+    if read_only_mode:
+        print("Read-only mode enabled: skipping profitSwap transaction.")
+        return
 
     try:
         Arbitrage[0].profitSwap([SwapParams1, SwapParams2], minAmoutOut, {'from':account})

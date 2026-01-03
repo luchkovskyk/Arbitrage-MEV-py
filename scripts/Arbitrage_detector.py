@@ -2,6 +2,7 @@ from .helpful_scripts import load_json, from_readable_amount, to_readable_amount
 from .multicall import get_max
 from .send_transaction import trade
 import time
+import argparse
 from brownie import web3
 from web3.middleware import simple_cache_middleware
 
@@ -18,7 +19,7 @@ def chunk(lst, n):
 
 
 
-def analysis():
+def analysis(read_only=None):
     base_tokens = load_json('base_tokens.json')
     tokens_arbitrum = load_json('token_list.json')
     tokens_arbitrum_list = list(chunk(tokens_arbitrum["tokens"], 4))
@@ -91,7 +92,7 @@ def analysis():
                         
                         print(f"For {readableAmountsIn} {base_symbol} in {maxOut[j][i][1]}  you get {readableAmountOut} {token1_symbol}")
                         print(f"For {readableAmountOut} {token1_symbol} in {maxIn[j][i][1]}  you get {readableAmountIn} {base_symbol}")
-                        trade(amountsIn[j][i], maxOut[j][i], maxIn[j][i], base_token, token1)
+                        trade(amountsIn[j][i], maxOut[j][i], maxIn[j][i], base_token, token1, read_only=read_only)
                         #readable_profit = to_readable_amount(profit_min, base_decimals)
                         #print(f"MIN PROFIT: {readable_profit}")
         
@@ -105,4 +106,7 @@ def analysis():
 
 
 def main():
-    analysis()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--read-only", action="store_true", help="Run without sending transactions.")
+    args = parser.parse_args()
+    analysis(read_only=args.read_only)

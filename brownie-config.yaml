@@ -8,6 +8,10 @@ dependencies:
 wallets:
   from_key: ${PRIVATE_KEY}
 
+mode:
+  read_only: false
+  read_only_from: ""
+
 quoter:
   uniswap: ${UNISWAP_QUOTER_ADDRESS}
   sushiswap: ${SUSHISWAP_QUOTER_ADDRESS}
@@ -43,6 +47,5 @@ compiler:
 
 networks:
   default: arbitrum-main
-
 
 
