@@ -1,5 +1,6 @@
+import argparse
 from brownie import config, accounts, interface, Arbitrage
-from .helpful_scripts import load_json
+from .helpful_scripts import load_json, resolve_private_key, resolve_read_only
 
 
 base_tokens = load_json('base_tokens.json')
@@ -17,8 +18,11 @@ PROTOCOLS = [
     "TraderjoeV2" #ILBRouter
 ]
 
-def retrieve():
-    account = accounts.add(config["wallets"]["from_key"])
+def retrieve(read_only=None):
+    if resolve_read_only(config, read_only):
+        print("Read-only mode enabled: skipping recoverMyTokens.")
+        return
+    account = accounts.add(resolve_private_key(config))
     tokens = []
     for token in base_tokens["tokens"]:
         tokens.append(token["address"])
@@ -28,10 +32,13 @@ def retrieve():
 
 
 
-def approve_handlers():
+def approve_handlers(read_only=None):
+    if resolve_read_only(config, read_only):
+        print("Read-only mode enabled: skipping approveHandlers.")
+        return
     tokens_list = []
     protocols_list = []
-    account = accounts.add(config["wallets"]["from_key"])
+    account = accounts.add(resolve_private_key(config))
 
     for token in base_tokens["tokens"]:
         tokens_list.append(token["address"])
@@ -43,8 +50,11 @@ def approve_handlers():
 
 
 
-def send():
-    account = accounts.add(config["wallets"]["from_key"])
+def send(read_only=None):
+    if resolve_read_only(config, read_only):
+        print("Read-only mode enabled: skipping transfers.")
+        return
+    account = accounts.add(resolve_private_key(config))
     for token in base_tokens["tokens"]:
         IERC20 = interface.IERC20(token["address"])
 
@@ -58,12 +68,18 @@ def send():
             pass
 
 
-def retrieve_one():
-    account = accounts.add(config["wallets"]["from_key"])
+def retrieve_one(read_only=None):
+    if resolve_read_only(config, read_only):
+        print("Read-only mode enabled: skipping recovermyTokens.")
+        return
+    account = accounts.add(resolve_private_key(config))
     address = base_tokens["tokens"][5]["address"]
     tx = Arbitrage[0].recovermyTokens(address, {'from': account})
 
 
 
 def main():
-    send()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--read-only", action="store_true", help="Run without sending transactions.")
+    args = parser.parse_args()
+    send(read_only=args.read_only)
